@@ -28,17 +28,36 @@ export function AchievementCard({ card, active = false, side, onEdit }: Props) {
     >
       {/* Dynamic water level. Height follows the card progress exactly. */}
       <div
-        className={`absolute bottom-0 left-0 right-0 overflow-visible transition-all duration-700 ${tone.water}`}
+        className={`absolute bottom-0 left-0 right-0 overflow-hidden transition-all duration-700 ease-out ${tone.water}`}
         style={{ height: waterHeight }}
         aria-hidden="true"
       >
-        <div className={`career-water-surface career-water-a ${tone.wave}`} />
-        <div className={`career-water-surface career-water-b ${tone.waveSoft}`} />
-        <div className="absolute inset-0 opacity-45 [background-image:radial-gradient(circle_at_16%_30%,rgba(255,255,255,.55)_0_2px,transparent_2px),radial-gradient(circle_at_62%_52%,rgba(255,255,255,.38)_0_3px,transparent_3px),radial-gradient(circle_at_78%_74%,rgba(255,255,255,.28)_0_2px,transparent_2px)]" />
+        <svg
+          className="career-wave-svg career-wave-a"
+          viewBox="0 0 1440 140"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,62 C160,118 290,14 452,63 C620,114 730,50 890,42 C1040,34 1170,100 1440,44 L1440,140 L0,140 Z"
+            fill={tone.waveFill}
+          />
+        </svg>
+        <svg
+          className="career-wave-svg career-wave-b"
+          viewBox="0 0 1440 140"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,78 C190,22 345,92 520,58 C700,24 850,100 1030,62 C1190,28 1290,70 1440,54 L1440,140 L0,140 Z"
+            fill={tone.waveFillSoft}
+          />
+        </svg>
+        <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_16%_30%,rgba(255,255,255,.65)_0_2px,transparent_2px),radial-gradient(circle_at_62%_52%,rgba(255,255,255,.45)_0_3px,transparent_3px),radial-gradient(circle_at_78%_74%,rgba(255,255,255,.36)_0_2px,transparent_2px)]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/6 via-white/16 to-white/28" />
       </div>
 
-      {/* Clean white wash so the card still feels light. */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/92 via-white/50 to-white/20" />
+      {/* Clean white wash so the card still feels light without hiding the water. */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/88 via-white/44 to-white/8" />
 
       <div className={`relative z-10 flex h-full flex-col ${active ? "p-7" : "p-6"}`}>
         <div className="flex items-start justify-between gap-3">
@@ -156,8 +175,8 @@ function getCardTone(category: string, tags: string[]) {
       tag: "bg-teal-100/90 text-teal-700",
       number: "text-teal-600",
       water: "bg-gradient-to-t from-teal-200/72 via-cyan-100/64 to-cyan-50/10",
-      wave: "bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,.34)_0%,rgba(125,211,252,.20)_52%,transparent_74%)]",
-      waveSoft: "bg-[radial-gradient(ellipse_at_center,rgba(45,212,191,.22)_0%,rgba(165,243,252,.16)_55%,transparent_76%)]",
+      waveFill: "rgba(20, 184, 166, 0.34)",
+      waveFillSoft: "rgba(125, 211, 252, 0.28)",
       skill: "border-teal-200 bg-teal-50/85 text-teal-700",
     };
   }
@@ -167,8 +186,8 @@ function getCardTone(category: string, tags: string[]) {
       tag: "bg-violet-100/90 text-violet-700",
       number: "text-violet-600",
       water: "bg-gradient-to-t from-violet-200/72 via-purple-100/56 to-violet-50/10",
-      wave: "bg-[radial-gradient(ellipse_at_center,rgba(139,92,246,.34)_0%,rgba(196,181,253,.20)_52%,transparent_74%)]",
-      waveSoft: "bg-[radial-gradient(ellipse_at_center,rgba(167,139,250,.22)_0%,rgba(221,214,254,.16)_55%,transparent_76%)]",
+      waveFill: "rgba(139, 92, 246, 0.34)",
+      waveFillSoft: "rgba(196, 181, 253, 0.28)",
       skill: "border-violet-200 bg-violet-50/85 text-violet-700",
     };
   }
@@ -178,8 +197,8 @@ function getCardTone(category: string, tags: string[]) {
       tag: "bg-blue-100/90 text-blue-700",
       number: "text-blue-600",
       water: "bg-gradient-to-t from-blue-200/72 via-sky-100/60 to-blue-50/10",
-      wave: "bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,.32)_0%,rgba(147,197,253,.20)_52%,transparent_74%)]",
-      waveSoft: "bg-[radial-gradient(ellipse_at_center,rgba(96,165,250,.22)_0%,rgba(191,219,254,.16)_55%,transparent_76%)]",
+      waveFill: "rgba(59, 130, 246, 0.32)",
+      waveFillSoft: "rgba(147, 197, 253, 0.28)",
       skill: "border-blue-200 bg-blue-50/85 text-blue-700",
     };
   }
@@ -188,8 +207,8 @@ function getCardTone(category: string, tags: string[]) {
     tag: "bg-teal-100/90 text-teal-700",
     number: "text-teal-600",
     water: "bg-gradient-to-t from-cyan-200/72 via-teal-100/58 to-cyan-50/10",
-    wave: "bg-[radial-gradient(ellipse_at_center,rgba(20,184,166,.34)_0%,rgba(125,211,252,.20)_52%,transparent_74%)]",
-    waveSoft: "bg-[radial-gradient(ellipse_at_center,rgba(45,212,191,.22)_0%,rgba(165,243,252,.16)_55%,transparent_76%)]",
+    waveFill: "rgba(20, 184, 166, 0.34)",
+    waveFillSoft: "rgba(125, 211, 252, 0.28)",
     skill: "border-teal-200 bg-teal-50/85 text-teal-700",
   };
 }

@@ -107,3 +107,37 @@ body {
     transform: translateX(-5%) translateY(1px) scaleX(1.05);
   }
 }
+
+
+.career-wave-svg {
+  position: absolute;
+  top: -50px;
+  left: -18%;
+  width: 136%;
+  height: 110px;
+  opacity: 0.98;
+  pointer-events: none;
+  transform-origin: center;
+}
+
+.career-wave-a {
+  animation: career-svg-wave-a 6.5s ease-in-out infinite alternate;
+}
+
+.career-wave-b {
+  top: -42px;
+  opacity: 0.68;
+  animation: career-svg-wave-b 8s ease-in-out infinite alternate;
+}
+
+@keyframes career-svg-wave-a {
+  0% { transform: translateX(-4%) translateY(0) scaleX(1.04); }
+  50% { transform: translateX(2%) translateY(-7px) scaleX(1.08); }
+  100% { transform: translateX(6%) translateY(3px) scaleX(1.05); }
+}
+
+@keyframes career-svg-wave-b {
+  0% { transform: translateX(5%) translateY(3px) scaleX(1.08); }
+  50% { transform: translateX(-2%) translateY(-5px) scaleX(1.03); }
+  100% { transform: translateX(-6%) translateY(2px) scaleX(1.06); }
+}
