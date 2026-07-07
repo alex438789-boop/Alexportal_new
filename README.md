@@ -1,28 +1,8 @@
-# ALEX Career OS — Achievement Capital MVP
+# Achievement Card Water Overlay Patch
 
-This is a full deployable Next.js + Tailwind MVP for the Achievement Capital page.
+Copy these files into your existing Next.js project:
 
-## Run locally
+- `components/achievement-capital/AchievementCard.tsx` replaces your current component.
+- Copy the contents of `app/globals-additions.css` into the bottom of your existing `app/globals.css`.
 
-```bash
-npm install --no-package-lock --legacy-peer-deps
-npm run dev
-```
-
-Open:
-
-```text
-http://localhost:3000/achievement-capital
-```
-
-## Vercel
-
-Use Framework Preset: Next.js. Leave Output Directory blank.
-
-## Latest UI update
-
-- Smaller typography and less full-screen density.
-- Taller, narrower active achievement card.
-- Dynamic water level from bottom to top based on card progress.
-- Animated wave surface for the water level.
-- Semi-transparent content panel retained for readability.
+This patch changes the water effect from a thin wave strip to a full-card submerged water fill. The fill height follows `card.progress`, while the content sits on a translucent gray-white glass panel for readability.
