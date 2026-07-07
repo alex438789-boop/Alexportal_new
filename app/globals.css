@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  background: #fbfcff;
+}
+
+body {
+  margin: 0;
+  color: #0f172a;
+}
+
+.input {
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgb(226 232 240);
+  background: white;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: rgb(15 23 42);
+  outline: none;
+}
+
+.input:focus {
+  border-color: rgb(124 58 237);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.08);
+}
+
+.textarea {
+  min-height: 96px;
+  width: 100%;
+  border-radius: 1rem;
+  border: 1px solid rgb(226 232 240);
+  background: white;
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  color: rgb(15 23 42);
+  outline: none;
+}
+
+.textarea:focus {
+  border-color: rgb(124 58 237);
+  box-shadow: 0 0 0 4px rgba(124, 58, 237, 0.08);
+}
+
+.card-water {
+  background:
+    radial-gradient(circle at 18% 28%, rgba(255,255,255,0.45) 0 2px, transparent 2px 100%),
+    radial-gradient(circle at 68% 62%, rgba(255,255,255,0.35) 0 3px, transparent 3px 100%),
+    linear-gradient(180deg, rgba(125, 211, 252, 0.52), rgba(45, 212, 191, 0.34));
+}
