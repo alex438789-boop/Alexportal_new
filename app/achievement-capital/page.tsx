@@ -10,7 +10,7 @@ import { AchievementCardData } from "@/components/achievement-capital/types";
 
 export default function AchievementCapitalPage() {
   const [cards, setCards] = useState<AchievementCardData[]>(mockAchievementCards);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(1);
   const [editingCard, setEditingCard] = useState<AchievementCardData | null>(null);
   const [resetOpen, setResetOpen] = useState(false);
 
@@ -43,12 +43,15 @@ export default function AchievementCapitalPage() {
     );
   };
 
+  const goPrevious = () => setActiveIndex((index) => Math.max(index - 1, 0));
+  const goNext = () => setActiveIndex((index) => Math.min(index + 1, cards.length - 1));
+
   return (
-    <main className="min-h-screen bg-[#fbfcff] text-slate-950">
+    <main className="min-h-screen overflow-x-hidden bg-[#fbfcff] text-slate-950">
       <Sidebar />
 
       <section className="ml-[260px] min-h-screen px-12 py-9">
-        <header className="flex items-start justify-between">
+        <header className="mx-auto flex max-w-[1320px] items-start justify-between">
           <div>
             <div className="flex items-center gap-3">
               <span className="text-3xl text-violet-600">✦</span>
@@ -66,54 +69,73 @@ export default function AchievementCapitalPage() {
           </button>
         </header>
 
-        <section className="relative mt-14 flex items-center justify-center gap-8 overflow-hidden py-6">
+        <section className="relative mx-auto mt-12 h-[680px] max-w-[1320px] overflow-visible">
           <button
-            onClick={() => setActiveIndex((index) => Math.max(index - 1, 0))}
-            className="z-20 flex h-14 w-14 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-lg transition hover:scale-105"
+            onClick={goPrevious}
+            className="absolute left-2 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-lg transition hover:scale-105 disabled:opacity-35"
             aria-label="Previous card"
+            disabled={activeIndex === 0}
           >
             ‹
           </button>
 
-          <div className="flex items-center justify-center gap-8">
+          <div className="absolute inset-0 flex items-center justify-center overflow-visible">
+            {cards.map((card, index) => {
+              const delta = index - activeIndex;
+              const visible = Math.abs(delta) <= 1;
+              if (!visible) return null;
+
+              const transform =
+                delta === 0
+                  ? "translate(-50%, -50%) scale(1)"
+                  : delta < 0
+                    ? "translate(calc(-50% - 470px), -50%) scale(.95)"
+                    : "translate(calc(-50% + 470px), -50%) scale(.95)";
+
+              return (
+                <button
+                  key={card.id}
+                  onClick={() => setActiveIndex(index)}
+                  className="absolute left-1/2 top-1/2 text-left transition-all duration-500"
+                  style={{ transform, zIndex: delta === 0 ? 10 : 4 }}
+                >
+                  <AchievementCard
+                    card={card}
+                    active={delta === 0}
+                    side={delta < 0 ? "left" : delta > 0 ? "right" : undefined}
+                    onEdit={() => setEditingCard(card)}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={goNext}
+            className="absolute right-2 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-lg transition hover:scale-105 disabled:opacity-35"
+            aria-label="Next card"
+            disabled={activeIndex === cards.length - 1}
+          >
+            ›
+          </button>
+
+          <div className="absolute bottom-1 left-1/2 flex -translate-x-1/2 justify-center gap-3">
             {cards.map((card, index) => (
               <button
                 key={card.id}
                 onClick={() => setActiveIndex(index)}
-                className="text-left"
-              >
-                <AchievementCard
-                  card={card}
-                  active={index === activeIndex}
-                  onEdit={() => setEditingCard(card)}
-                />
-              </button>
+                className={`h-3 w-3 rounded-full transition ${
+                  index === activeIndex ? "bg-violet-600" : "bg-slate-300"
+                }`}
+                aria-label={`Go to card ${index + 1}`}
+              />
             ))}
           </div>
-
-          <button
-            onClick={() => setActiveIndex((index) => Math.min(index + 1, cards.length - 1))}
-            className="z-20 flex h-14 w-14 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-lg transition hover:scale-105"
-            aria-label="Next card"
-          >
-            ›
-          </button>
         </section>
 
-        <div className="mt-2 flex justify-center gap-3">
-          {cards.map((card, index) => (
-            <button
-              key={card.id}
-              onClick={() => setActiveIndex(index)}
-              className={`h-3 w-3 rounded-full transition ${
-                index === activeIndex ? "bg-violet-600" : "bg-slate-300"
-              }`}
-              aria-label={`Go to card ${index + 1}`}
-            />
-          ))}
+        <div className="mx-auto max-w-[1120px]">
+          <AchievementTabs card={activeCard} />
         </div>
-
-        <AchievementTabs card={activeCard} />
 
         <button
           onClick={() => setResetOpen(true)}
