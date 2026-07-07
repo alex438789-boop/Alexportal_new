@@ -1,15 +1,14 @@
-# TypeScript build fix patch
+# Achievement Card full-cover water patch
 
-This patch fixes:
+Copy these files into your project and overwrite existing files:
 
-`Cannot find module './types'`
+- `components/achievement-capital/AchievementCard.tsx`
+- `app/globals.css`
 
-Copy `components/achievement-capital/types.ts` into your project at the same folder as `AchievementCard.tsx`.
+This patch changes the water from a thin wave strip into a full-card fill layer:
 
-Expected path:
+- The card is filled from bottom to the `progress` percentage.
+- The water surface is animated with two SVG wave layers.
+- The content block uses a translucent gray-white glass panel for readability.
 
-```txt
-components/achievement-capital/types.ts
-```
-
-Then redeploy.
+After replacing files, redeploy to Vercel and hard refresh the page.

@@ -22,52 +22,52 @@ export function AchievementCard({ card, active = false, side, onEdit }: Props) {
     <article
       className={`relative shrink-0 overflow-hidden rounded-[2rem] border border-slate-200/90 bg-white shadow-[0_28px_80px_rgba(15,23,42,0.10)] transition-all duration-500 ${
         active
-          ? "h-[720px] w-[480px] opacity-100"
-          : "h-[560px] w-[320px] opacity-55 blur-[1.2px]"
+          ? "h-[690px] w-[500px] opacity-100"
+          : "h-[560px] w-[320px] opacity-52 blur-[1.3px]"
       }`}
     >
-      {/* Full-card water fill. Everything below the progress line is submerged. */}
+      {/*
+        Full-cover dynamic water level.
+        The entire area below the waterline is filled, not only the wave surface.
+      */}
       <div
-        className="pointer-events-none absolute bottom-0 left-0 right-0 z-0 overflow-hidden transition-all duration-700 ease-out"
+        className="pointer-events-none absolute bottom-0 left-0 right-0 z-0 overflow-hidden transition-[height] duration-700 ease-out"
         style={{ height: waterHeight }}
         aria-hidden="true"
       >
         {/* water body */}
-        <div className={`absolute inset-0 ${tone.water}`} />
+        <div className={`absolute inset-0 ${tone.waterBody}`} />
 
-        {/* soft underwater texture */}
-        <div className="absolute inset-0 opacity-65 [background-image:radial-gradient(circle_at_18%_26%,rgba(255,255,255,.70)_0_2px,transparent_2px),radial-gradient(circle_at_42%_58%,rgba(255,255,255,.38)_0_3px,transparent_3px),radial-gradient(circle_at_72%_34%,rgba(255,255,255,.52)_0_2px,transparent_2px),radial-gradient(circle_at_84%_78%,rgba(255,255,255,.32)_0_2px,transparent_2px)]" />
+        {/* gentle depth and bubbles */}
+        <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_16%_30%,rgba(255,255,255,.70)_0_2px,transparent_2px),radial-gradient(circle_at_62%_52%,rgba(255,255,255,.48)_0_3px,transparent_3px),radial-gradient(circle_at_78%_74%,rgba(255,255,255,.38)_0_2px,transparent_2px),radial-gradient(circle_at_42%_82%,rgba(255,255,255,.32)_0_4px,transparent_4px)]" />
 
-        {/* animated water surface */}
-        <div className="absolute left-0 right-0 top-[-22px] h-14 overflow-hidden">
+        {/* water surface: two animated SVG waves */}
+        <div className="absolute left-0 right-0 top-[-30px] h-[62px] overflow-hidden">
           <svg
-            className="career-wave-svg career-wave-a absolute left-0 top-0 h-14 w-[220%]"
-            viewBox="0 0 1440 140"
+            className="career-wave-svg career-wave-slow absolute left-0 top-0 h-[62px] w-[220%]"
+            viewBox="0 0 1440 120"
             preserveAspectRatio="none"
           >
             <path
-              d="M0,72 C170,24 320,116 500,70 C690,20 840,92 1010,58 C1190,22 1300,86 1440,54 L1440,140 L0,140 Z"
+              d="M0,58 C170,18 320,92 500,54 C690,14 830,90 1010,54 C1190,18 1310,76 1440,48 L1440,120 L0,120 Z"
               fill={tone.waveFill}
             />
           </svg>
           <svg
-            className="career-wave-svg career-wave-b absolute left-0 top-2 h-14 w-[220%]"
-            viewBox="0 0 1440 140"
+            className="career-wave-svg career-wave-fast absolute left-0 top-[7px] h-[62px] w-[220%]"
+            viewBox="0 0 1440 120"
             preserveAspectRatio="none"
           >
             <path
-              d="M0,80 C160,124 310,38 480,78 C660,120 820,32 1000,76 C1160,116 1300,44 1440,70 L1440,140 L0,140 Z"
+              d="M0,62 C145,94 275,24 440,62 C610,100 760,24 930,62 C1100,100 1260,30 1440,58 L1440,120 L0,120 Z"
               fill={tone.waveFillSoft}
             />
           </svg>
         </div>
-
-        {/* submerged highlight */}
-        <div className="absolute inset-0 bg-gradient-to-t from-white/6 via-white/14 to-white/22" />
       </div>
 
-      {/* Light wash: keeps the page white while preserving visible water. */}
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-white/82 via-white/30 to-white/0" />
+      {/* Soft wash: keeps the card clean, but does not erase the water fill. */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-white/78 via-white/22 to-white/4" />
 
       <div className={`relative z-10 flex h-full flex-col ${active ? "p-7" : "p-6"}`}>
         <div className="flex items-start justify-between gap-3">
@@ -129,16 +129,16 @@ export function AchievementCard({ card, active = false, side, onEdit }: Props) {
         </div>
 
         <div className={active ? "mt-8" : "mt-10"}>
-          <h2 className={`${active ? "text-[22px]" : "text-[20px]"} font-semibold leading-tight tracking-tight text-slate-950`}>
+          <h2 className={`${active ? "text-[24px]" : "text-[21px]"} font-semibold leading-tight tracking-tight text-slate-950`}>
             {card.title}
           </h2>
-          <p className={`${active ? "mt-2 text-[14px]" : "mt-2 text-sm"} text-slate-600`}>
+          <p className={`${active ? "mt-2 text-[15px]" : "mt-2 text-sm"} text-slate-600`}>
             {card.subtitle}
           </p>
         </div>
 
-        {/* Glass information panel for readability over water. */}
-        <div className="mt-auto rounded-[1.45rem] border border-white/75 bg-white/78 p-5 shadow-[0_18px_60px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+        {/* Readable glass content block. Increase bg-white/78 to bg-white/84 if you want less water behind text. */}
+        <div className="mt-auto rounded-[1.45rem] border border-white/80 bg-white/78 p-5 shadow-[0_18px_55px_rgba(15,23,42,0.08)] backdrop-blur-xl">
           <InfoSection title="Current Value" icon="▣">
             <p className="line-clamp-3 leading-6 text-slate-700">{card.currentValue}</p>
           </InfoSection>
@@ -185,9 +185,9 @@ function getCardTone(category: string, tags: string[]) {
     return {
       tag: "bg-teal-100/90 text-teal-700",
       number: "text-teal-600",
-      water: "bg-gradient-to-t from-teal-200/78 via-cyan-100/66 to-cyan-50/35",
-      waveFill: "rgba(20, 184, 166, 0.44)",
-      waveFillSoft: "rgba(125, 211, 252, 0.36)",
+      waterBody: "bg-gradient-to-t from-teal-200/75 via-cyan-100/70 to-cyan-50/35",
+      waveFill: "rgba(20, 184, 166, 0.46)",
+      waveFillSoft: "rgba(125, 211, 252, 0.34)",
       skill: "border-teal-200 bg-teal-50/85 text-teal-700",
     };
   }
@@ -196,9 +196,9 @@ function getCardTone(category: string, tags: string[]) {
     return {
       tag: "bg-violet-100/90 text-violet-700",
       number: "text-violet-600",
-      water: "bg-gradient-to-t from-violet-200/78 via-purple-100/64 to-violet-50/35",
-      waveFill: "rgba(139, 92, 246, 0.44)",
-      waveFillSoft: "rgba(196, 181, 253, 0.36)",
+      waterBody: "bg-gradient-to-t from-violet-200/75 via-purple-100/68 to-violet-50/35",
+      waveFill: "rgba(139, 92, 246, 0.46)",
+      waveFillSoft: "rgba(196, 181, 253, 0.34)",
       skill: "border-violet-200 bg-violet-50/85 text-violet-700",
     };
   }
@@ -207,9 +207,9 @@ function getCardTone(category: string, tags: string[]) {
     return {
       tag: "bg-blue-100/90 text-blue-700",
       number: "text-blue-600",
-      water: "bg-gradient-to-t from-blue-200/78 via-sky-100/66 to-blue-50/35",
-      waveFill: "rgba(59, 130, 246, 0.42)",
-      waveFillSoft: "rgba(147, 197, 253, 0.36)",
+      waterBody: "bg-gradient-to-t from-blue-200/75 via-sky-100/70 to-blue-50/35",
+      waveFill: "rgba(59, 130, 246, 0.44)",
+      waveFillSoft: "rgba(147, 197, 253, 0.34)",
       skill: "border-blue-200 bg-blue-50/85 text-blue-700",
     };
   }
@@ -217,9 +217,9 @@ function getCardTone(category: string, tags: string[]) {
   return {
     tag: "bg-teal-100/90 text-teal-700",
     number: "text-teal-600",
-    water: "bg-gradient-to-t from-cyan-200/78 via-teal-100/66 to-cyan-50/35",
-    waveFill: "rgba(20, 184, 166, 0.44)",
-    waveFillSoft: "rgba(125, 211, 252, 0.36)",
+    waterBody: "bg-gradient-to-t from-cyan-200/75 via-teal-100/70 to-cyan-50/35",
+    waveFill: "rgba(20, 184, 166, 0.46)",
+    waveFillSoft: "rgba(125, 211, 252, 0.34)",
     skill: "border-teal-200 bg-teal-50/85 text-teal-700",
   };
 }
