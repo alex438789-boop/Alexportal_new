@@ -22,52 +22,43 @@ export function AchievementCard({ card, active = false, side, onEdit }: Props) {
     <article
       className={`relative shrink-0 overflow-hidden rounded-[2rem] border border-slate-200/90 bg-white shadow-[0_28px_80px_rgba(15,23,42,0.10)] transition-all duration-500 ${
         active
-          ? "h-[690px] w-[500px] opacity-100"
-          : "h-[560px] w-[320px] opacity-52 blur-[1.3px]"
+          ? "h-[720px] w-[470px] opacity-100"
+          : "h-[575px] w-[315px] opacity-55 blur-[1.4px]"
       }`}
     >
-      {/*
-        Full-cover dynamic water level.
-        The entire area below the waterline is filled, not only the wave surface.
-      */}
+      {/* Full-card water fill. The whole area below the water surface is filled. */}
       <div
-        className="pointer-events-none absolute bottom-0 left-0 right-0 z-0 overflow-hidden transition-[height] duration-700 ease-out"
+        className={`pointer-events-none absolute bottom-0 left-0 right-0 z-0 overflow-hidden transition-all duration-700 ease-out ${tone.water}`}
         style={{ height: waterHeight }}
         aria-hidden="true"
       >
-        {/* water body */}
-        <div className={`absolute inset-0 ${tone.waterBody}`} />
+        <div className="absolute inset-0 bg-gradient-to-t from-white/5 via-white/12 to-white/22" />
+        <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_16%_30%,rgba(255,255,255,.60)_0_2px,transparent_2px),radial-gradient(circle_at_62%_52%,rgba(255,255,255,.42)_0_3px,transparent_3px),radial-gradient(circle_at_78%_74%,rgba(255,255,255,.32)_0_2px,transparent_2px)]" />
 
-        {/* gentle depth and bubbles */}
-        <div className="absolute inset-0 opacity-60 [background-image:radial-gradient(circle_at_16%_30%,rgba(255,255,255,.70)_0_2px,transparent_2px),radial-gradient(circle_at_62%_52%,rgba(255,255,255,.48)_0_3px,transparent_3px),radial-gradient(circle_at_78%_74%,rgba(255,255,255,.38)_0_2px,transparent_2px),radial-gradient(circle_at_42%_82%,rgba(255,255,255,.32)_0_4px,transparent_4px)]" />
-
-        {/* water surface: two animated SVG waves */}
-        <div className="absolute left-0 right-0 top-[-30px] h-[62px] overflow-hidden">
-          <svg
-            className="career-wave-svg career-wave-slow absolute left-0 top-0 h-[62px] w-[220%]"
-            viewBox="0 0 1440 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,58 C170,18 320,92 500,54 C690,14 830,90 1010,54 C1190,18 1310,76 1440,48 L1440,120 L0,120 Z"
-              fill={tone.waveFill}
-            />
-          </svg>
-          <svg
-            className="career-wave-svg career-wave-fast absolute left-0 top-[7px] h-[62px] w-[220%]"
-            viewBox="0 0 1440 120"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M0,62 C145,94 275,24 440,62 C610,100 760,24 930,62 C1100,100 1260,30 1440,58 L1440,120 L0,120 Z"
-              fill={tone.waveFillSoft}
-            />
-          </svg>
-        </div>
+        <svg
+          className="career-wave-svg career-wave-a"
+          viewBox="0 0 1440 140"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,62 C160,118 290,14 452,63 C620,114 730,50 890,42 C1040,34 1170,100 1440,44 L1440,140 L0,140 Z"
+            fill={tone.waveFill}
+          />
+        </svg>
+        <svg
+          className="career-wave-svg career-wave-b"
+          viewBox="0 0 1440 140"
+          preserveAspectRatio="none"
+        >
+          <path
+            d="M0,78 C190,22 345,92 520,58 C700,24 850,100 1030,62 C1190,28 1290,70 1440,54 L1440,140 L0,140 Z"
+            fill={tone.waveFillSoft}
+          />
+        </svg>
       </div>
 
-      {/* Soft wash: keeps the card clean, but does not erase the water fill. */}
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-white/78 via-white/22 to-white/4" />
+      {/* Light wash keeps the surface airy while still allowing the water block to show. */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-white/86 via-white/40 to-white/10" />
 
       <div className={`relative z-10 flex h-full flex-col ${active ? "p-7" : "p-6"}`}>
         <div className="flex items-start justify-between gap-3">
@@ -137,8 +128,7 @@ export function AchievementCard({ card, active = false, side, onEdit }: Props) {
           </p>
         </div>
 
-        {/* Readable glass content block. Increase bg-white/78 to bg-white/84 if you want less water behind text. */}
-        <div className="mt-auto rounded-[1.45rem] border border-white/80 bg-white/78 p-5 shadow-[0_18px_55px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+        <div className="mt-auto rounded-[1.45rem] border border-white/75 bg-white/78 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
           <InfoSection title="Current Value" icon="▣">
             <p className="line-clamp-3 leading-6 text-slate-700">{card.currentValue}</p>
           </InfoSection>
@@ -185,8 +175,8 @@ function getCardTone(category: string, tags: string[]) {
     return {
       tag: "bg-teal-100/90 text-teal-700",
       number: "text-teal-600",
-      waterBody: "bg-gradient-to-t from-teal-200/75 via-cyan-100/70 to-cyan-50/35",
-      waveFill: "rgba(20, 184, 166, 0.46)",
+      water: "bg-gradient-to-t from-teal-200/74 via-cyan-100/66 to-cyan-50/24",
+      waveFill: "rgba(20, 184, 166, 0.42)",
       waveFillSoft: "rgba(125, 211, 252, 0.34)",
       skill: "border-teal-200 bg-teal-50/85 text-teal-700",
     };
@@ -196,8 +186,8 @@ function getCardTone(category: string, tags: string[]) {
     return {
       tag: "bg-violet-100/90 text-violet-700",
       number: "text-violet-600",
-      waterBody: "bg-gradient-to-t from-violet-200/75 via-purple-100/68 to-violet-50/35",
-      waveFill: "rgba(139, 92, 246, 0.46)",
+      water: "bg-gradient-to-t from-violet-200/74 via-purple-100/60 to-violet-50/22",
+      waveFill: "rgba(139, 92, 246, 0.42)",
       waveFillSoft: "rgba(196, 181, 253, 0.34)",
       skill: "border-violet-200 bg-violet-50/85 text-violet-700",
     };
@@ -207,8 +197,8 @@ function getCardTone(category: string, tags: string[]) {
     return {
       tag: "bg-blue-100/90 text-blue-700",
       number: "text-blue-600",
-      waterBody: "bg-gradient-to-t from-blue-200/75 via-sky-100/70 to-blue-50/35",
-      waveFill: "rgba(59, 130, 246, 0.44)",
+      water: "bg-gradient-to-t from-blue-200/74 via-sky-100/62 to-blue-50/22",
+      waveFill: "rgba(59, 130, 246, 0.40)",
       waveFillSoft: "rgba(147, 197, 253, 0.34)",
       skill: "border-blue-200 bg-blue-50/85 text-blue-700",
     };
@@ -217,8 +207,8 @@ function getCardTone(category: string, tags: string[]) {
   return {
     tag: "bg-teal-100/90 text-teal-700",
     number: "text-teal-600",
-    waterBody: "bg-gradient-to-t from-cyan-200/75 via-teal-100/70 to-cyan-50/35",
-    waveFill: "rgba(20, 184, 166, 0.46)",
+    water: "bg-gradient-to-t from-cyan-200/74 via-teal-100/62 to-cyan-50/22",
+    waveFill: "rgba(20, 184, 166, 0.42)",
     waveFillSoft: "rgba(125, 211, 252, 0.34)",
     skill: "border-teal-200 bg-teal-50/85 text-teal-700",
   };

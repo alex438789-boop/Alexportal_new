@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Sidebar } from "@/components/achievement-capital/Sidebar";
 import { AchievementCard } from "@/components/achievement-capital/AchievementCard";
 import { AchievementEditModal } from "@/components/achievement-capital/AchievementEditModal";
@@ -12,17 +12,22 @@ export default function AchievementCapitalPage() {
   const [cards, setCards] = useState<AchievementCardData[]>(mockAchievementCards);
   const [activeIndex, setActiveIndex] = useState(1);
   const [editingCard, setEditingCard] = useState<AchievementCardData | null>(null);
-  const [resetOpen, setResetOpen] = useState(false);
 
   const activeCard = cards[activeIndex];
 
+  const positionedCards = useMemo(() => {
+    return cards.map((card, index) => {
+      const diff = index - activeIndex;
+      const side = diff === 0 ? "active" : diff < 0 ? "left" : "right";
+      return { card, index, side, diff };
+    });
+  }, [cards, activeIndex]);
+
   const saveCard = (updatedCard: AchievementCardData) => {
-    setCards((previousCards) =>
-      previousCards.map((card) => {
+    setCards((prev) =>
+      prev.map((card) => {
         if (card.id !== updatedCard.id) return card;
-
         const progressChanged = card.progress !== updatedCard.progress;
-
         return {
           ...updatedCard,
           timeline: [
@@ -43,83 +48,75 @@ export default function AchievementCapitalPage() {
     );
   };
 
-  const goPrevious = () => setActiveIndex((index) => Math.max(index - 1, 0));
-  const goNext = () => setActiveIndex((index) => Math.min(index + 1, cards.length - 1));
-
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#fbfcff] text-slate-950">
+    <main className="flex min-h-screen overflow-hidden bg-[#f8fbff] text-slate-950">
       <Sidebar />
 
-      <section className="ml-[260px] min-h-screen px-10 py-8">
-        <header className="mx-auto flex max-w-[1320px] items-start justify-between">
+      <section className="relative flex-1 overflow-hidden px-8 py-8">
+        <header className="mx-auto flex max-w-[1320px] items-start justify-between gap-6">
           <div>
             <div className="flex items-center gap-3">
               <span className="text-3xl text-violet-600">✦</span>
-              <h1 className="text-[30px] font-semibold tracking-tight text-slate-950">
+              <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
                 Achievement Capital
               </h1>
             </div>
-            <p className="mt-2 text-base text-slate-600">
+            <p className="mt-2 text-sm text-slate-500">
               Turn experience, ideas, and projects into fillable career capital cards.
             </p>
           </div>
 
-          <button className="rounded-xl bg-violet-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-violet-500/20 transition hover:bg-violet-700">
+          <button className="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(124,58,237,0.25)] hover:bg-violet-500">
             ✦ New Input
           </button>
         </header>
 
-        <section className="relative mx-auto mt-9 h-[760px] max-w-[1240px] overflow-visible">
+        <section className="relative mx-auto mt-8 h-[760px] max-w-[1320px] overflow-visible">
+          {positionedCards.map(({ card, index, diff }) => {
+            if (Math.abs(diff) > 1) return null;
+            const isActive = diff === 0;
+            const translate = isActive
+              ? "translate(-50%, -50%)"
+              : diff < 0
+                ? "translate(calc(-50% - 430px), -50%)"
+                : "translate(calc(-50% + 430px), -50%)";
+
+            return (
+              <div
+                key={card.id}
+                className="absolute left-1/2 top-1/2 transition-all duration-500"
+                style={{
+                  transform: translate,
+                  zIndex: isActive ? 20 : 10,
+                }}
+                onClick={() => setActiveIndex(index)}
+              >
+                <AchievementCard
+                  card={card}
+                  active={isActive}
+                  side={isActive ? undefined : diff < 0 ? "left" : "right"}
+                  onEdit={() => setEditingCard(card)}
+                />
+              </div>
+            );
+          })}
+
           <button
-            onClick={goPrevious}
-            className="absolute left-2 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-lg transition hover:scale-105 disabled:opacity-35"
+            onClick={() => setActiveIndex((value) => Math.max(0, value - 1))}
+            className="absolute left-4 top-1/2 z-30 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-xl hover:bg-slate-50"
             aria-label="Previous card"
-            disabled={activeIndex === 0}
           >
             ‹
           </button>
-
-          <div className="absolute inset-0 flex items-center justify-center overflow-visible">
-            {cards.map((card, index) => {
-              const delta = index - activeIndex;
-              const visible = Math.abs(delta) <= 1;
-              if (!visible) return null;
-
-              const transform =
-                delta === 0
-                  ? "translate(-50%, -50%) scale(1)"
-                  : delta < 0
-                    ? "translate(calc(-50% - 420px), -50%) scale(.92)"
-                    : "translate(calc(-50% + 420px), -50%) scale(.92)";
-
-              return (
-                <button
-                  key={card.id}
-                  onClick={() => setActiveIndex(index)}
-                  className="absolute left-1/2 top-1/2 text-left transition-all duration-500"
-                  style={{ transform, zIndex: delta === 0 ? 10 : 4 }}
-                >
-                  <AchievementCard
-                    card={card}
-                    active={delta === 0}
-                    side={delta < 0 ? "left" : delta > 0 ? "right" : undefined}
-                    onEdit={() => setEditingCard(card)}
-                  />
-                </button>
-              );
-            })}
-          </div>
-
           <button
-            onClick={goNext}
-            className="absolute right-2 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-lg transition hover:scale-105 disabled:opacity-35"
+            onClick={() => setActiveIndex((value) => Math.min(cards.length - 1, value + 1))}
+            className="absolute right-4 top-1/2 z-30 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-xl hover:bg-slate-50"
             aria-label="Next card"
-            disabled={activeIndex === cards.length - 1}
           >
             ›
           </button>
 
-          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 justify-center gap-3">
+          <div className="absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 gap-3">
             {cards.map((card, index) => (
               <button
                 key={card.id}
@@ -133,41 +130,12 @@ export default function AchievementCapitalPage() {
           </div>
         </section>
 
-        <div className="mx-auto max-w-[1120px]">
-          <AchievementTabs card={activeCard} />
-        </div>
+        <AchievementTabs card={activeCard} />
 
-        <button
-          onClick={() => setResetOpen(true)}
-          className="fixed bottom-7 right-7 rounded-full bg-slate-950 px-5 py-4 text-sm font-semibold text-white shadow-2xl transition hover:bg-slate-800"
-        >
+        <button className="fixed bottom-7 right-7 z-40 rounded-full bg-slate-950 px-6 py-5 text-sm font-semibold text-white shadow-xl hover:bg-slate-800">
           Reset
         </button>
       </section>
-
-      {resetOpen && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/25 p-5 backdrop-blur-sm">
-          <div className="w-[460px] rounded-[2rem] bg-white p-7 shadow-2xl">
-            <h2 className="text-2xl font-semibold text-slate-950">Reset Mode</h2>
-            <p className="mt-3 text-sm leading-6 text-slate-500">
-              Recommended now: fill one card by 5%. Start with the active card’s next fill action.
-            </p>
-            <div className="mt-5 rounded-2xl bg-slate-50 p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Suggested Card</p>
-              <p className="mt-2 font-semibold text-slate-950">{activeCard.title}</p>
-              <p className="mt-3 text-sm leading-6 text-slate-600">{activeCard.nextFillAction}</p>
-            </div>
-            <div className="mt-6 flex justify-end gap-3">
-              <button className="rounded-2xl border border-slate-200 px-5 py-3 text-sm text-slate-600" onClick={() => setResetOpen(false)}>
-                Close
-              </button>
-              <button className="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white" onClick={() => setResetOpen(false)}>
-                Open Card
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       <AchievementEditModal
         card={editingCard}

@@ -1,14 +1,44 @@
-# Achievement Card full-cover water patch
+# ALEX Career OS — Achievement Capital Full Water Project
 
-Copy these files into your project and overwrite existing files:
+This is a full Next.js + Tailwind project for the Achievement Capital MVP.
 
-- `components/achievement-capital/AchievementCard.tsx`
-- `app/globals.css`
+## Includes
 
-This patch changes the water from a thin wave strip into a full-card fill layer:
+- Complete Next.js project structure
+- Achievement Capital page at `/achievement-capital`
+- Home route `/` redirects to `/achievement-capital`
+- Sidebar
+- Achievement card carousel
+- Full-card water-level overlay based on progress
+- Animated SVG wave surface
+- Translucent glass content panel for readability
+- Manual edit modal with field-by-field editing
+- AI dropdown placeholder
+- Overview / Evidence / Capital Timeline tabs
+- Seed cards:
+  - Kinmen Dissertation
+  - YardenPORTAL Prototype
+  - CBAM Investment Research
 
-- The card is filled from bottom to the `progress` percentage.
-- The water surface is animated with two SVG wave layers.
-- The content block uses a translucent gray-white glass panel for readability.
+## Local run
 
-After replacing files, redeploy to Vercel and hard refresh the page.
+```bash
+npm install --no-package-lock --legacy-peer-deps
+npm run dev
+```
+
+Open:
+
+```bash
+http://localhost:3000/achievement-capital
+```
+
+## Vercel settings
+
+- Framework Preset: Next.js
+- Root Directory: `./` or blank
+- Install Command: `npm install --no-package-lock --legacy-peer-deps`
+- Build Command: `npm run build`
+- Output Directory: leave blank
+
+Do not set Output Directory to `public`.
