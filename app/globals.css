@@ -91,3 +91,37 @@ body {
   border-color: rgb(124 58 237);
   box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
 }
+
+@keyframes career-bottom-water-drift-a {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-16%);
+  }
+}
+
+@keyframes career-bottom-water-drift-b {
+  0% {
+    transform: translateX(-10%);
+  }
+  100% {
+    transform: translateX(-26%);
+  }
+}
+
+.career-bottom-water {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 125%;
+  height: 100%;
+}
+
+.career-bottom-water-a {
+  animation: career-bottom-water-drift-a 8s linear infinite;
+}
+
+.career-bottom-water-b {
+  animation: career-bottom-water-drift-b 5.5s linear infinite;
+}
