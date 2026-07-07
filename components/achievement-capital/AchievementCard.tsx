@@ -26,39 +26,45 @@ export function AchievementCard({ card, active = false, side, onEdit }: Props) {
           : "h-[575px] w-[315px] opacity-55 blur-[1.4px]"
       }`}
     >
-      {/* Full-card water fill. The whole area below the water surface is filled. */}
+      {/* Water zone begins below the title/subtitle area, so the wave never cuts through text. */}
       <div
-        className={`pointer-events-none absolute bottom-0 left-0 right-0 z-0 overflow-hidden transition-all duration-700 ease-out ${tone.water}`}
-        style={{ height: waterHeight }}
+        className="pointer-events-none absolute bottom-0 left-0 right-0 z-0 overflow-hidden"
+        style={{ top: active ? "238px" : "190px" }}
         aria-hidden="true"
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-white/5 via-white/12 to-white/22" />
-        <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_16%_30%,rgba(255,255,255,.60)_0_2px,transparent_2px),radial-gradient(circle_at_62%_52%,rgba(255,255,255,.42)_0_3px,transparent_3px),radial-gradient(circle_at_78%_74%,rgba(255,255,255,.32)_0_2px,transparent_2px)]" />
+        {/* Filled water body. Height follows progress inside the lower content zone. */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 overflow-hidden transition-all duration-700 ease-out ${tone.water}`}
+          style={{ height: waterHeight }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-t from-white/5 via-white/12 to-white/22" />
+          <div className="absolute inset-0 opacity-50 [background-image:radial-gradient(circle_at_16%_30%,rgba(255,255,255,.60)_0_2px,transparent_2px),radial-gradient(circle_at_62%_52%,rgba(255,255,255,.42)_0_3px,transparent_3px),radial-gradient(circle_at_78%_74%,rgba(255,255,255,.32)_0_2px,transparent_2px)]" />
 
-        <svg
-          className="career-wave-svg career-wave-a"
-          viewBox="0 0 1440 140"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,62 C160,118 290,14 452,63 C620,114 730,50 890,42 C1040,34 1170,100 1440,44 L1440,140 L0,140 Z"
-            fill={tone.waveFill}
-          />
-        </svg>
-        <svg
-          className="career-wave-svg career-wave-b"
-          viewBox="0 0 1440 140"
-          preserveAspectRatio="none"
-        >
-          <path
-            d="M0,78 C190,22 345,92 520,58 C700,24 850,100 1030,62 C1190,28 1290,70 1440,54 L1440,140 L0,140 Z"
-            fill={tone.waveFillSoft}
-          />
-        </svg>
+          <svg
+            className="career-wave-svg career-wave-a"
+            viewBox="0 0 1440 140"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,62 C160,118 290,14 452,63 C620,114 730,50 890,42 C1040,34 1170,100 1440,44 L1440,140 L0,140 Z"
+              fill={tone.waveFill}
+            />
+          </svg>
+          <svg
+            className="career-wave-svg career-wave-b"
+            viewBox="0 0 1440 140"
+            preserveAspectRatio="none"
+          >
+            <path
+              d="M0,78 C190,22 345,92 520,58 C700,24 850,100 1030,62 C1190,28 1290,70 1440,54 L1440,140 L0,140 Z"
+              fill={tone.waveFillSoft}
+            />
+          </svg>
+        </div>
       </div>
 
-      {/* Light wash keeps the surface airy while still allowing the water block to show. */}
-      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-white/86 via-white/40 to-white/10" />
+      {/* Light wash preserves the clean white card while allowing the lower water zone to remain visible. */}
+      <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-white/94 via-white/46 to-white/8" />
 
       <div className={`relative z-10 flex h-full flex-col ${active ? "p-7" : "p-6"}`}>
         <div className="flex items-start justify-between gap-3">
@@ -128,7 +134,7 @@ export function AchievementCard({ card, active = false, side, onEdit }: Props) {
           </p>
         </div>
 
-        <div className="mt-auto rounded-[1.45rem] border border-white/75 bg-white/78 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+        <div className="mt-auto rounded-[1.45rem] border border-white/75 bg-white/64 p-5 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
           <InfoSection title="Current Value" icon="▣">
             <p className="line-clamp-3 leading-6 text-slate-700">{card.currentValue}</p>
           </InfoSection>
