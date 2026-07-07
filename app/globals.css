@@ -61,3 +61,49 @@ body {
     radial-gradient(circle at 68% 62%, rgba(255,255,255,0.35) 0 3px, transparent 3px 100%),
     linear-gradient(180deg, rgba(125, 211, 252, 0.52), rgba(45, 212, 191, 0.34));
 }
+
+.career-water-surface {
+  position: absolute;
+  left: -12%;
+  top: -30px;
+  height: 62px;
+  width: 124%;
+  border-radius: 9999px;
+  filter: blur(0.2px);
+  opacity: 0.92;
+  mix-blend-mode: multiply;
+}
+
+.career-water-a {
+  animation: career-wave-drift-a 7s ease-in-out infinite alternate;
+}
+
+.career-water-b {
+  top: -22px;
+  opacity: 0.58;
+  animation: career-wave-drift-b 9s ease-in-out infinite alternate;
+}
+
+@keyframes career-wave-drift-a {
+  0% {
+    transform: translateX(-3%) translateY(0) scaleX(1.02);
+  }
+  50% {
+    transform: translateX(2%) translateY(-4px) scaleX(1.06);
+  }
+  100% {
+    transform: translateX(5%) translateY(2px) scaleX(1.03);
+  }
+}
+
+@keyframes career-wave-drift-b {
+  0% {
+    transform: translateX(4%) translateY(2px) scaleX(1.06);
+  }
+  50% {
+    transform: translateX(-2%) translateY(-3px) scaleX(1.02);
+  }
+  100% {
+    transform: translateX(-5%) translateY(1px) scaleX(1.05);
+  }
+}

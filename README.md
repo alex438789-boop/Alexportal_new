@@ -1,59 +1,28 @@
 # ALEX Career OS — Achievement Capital MVP
 
-This is a complete Next.js + Tailwind CSS MVP project for the **Achievement Capital** module.
+This is a full deployable Next.js + Tailwind MVP for the Achievement Capital page.
 
-## What it includes
-
-- `/achievement-capital` route
-- White-background UI
-- Left sidebar
-- Central Achievement Card carousel
-- Full-card water-level progress background
-- Manual field-by-field editing modal
-- AI action dropdown placeholder
-- Overview / Evidence / Capital Timeline tabs
-- Reset placeholder modal
-- Seed cards:
-  - Kinmen Dissertation
-  - YardenPORTAL Prototype
-  - CBAM Investment Research
-
-## Local setup
+## Run locally
 
 ```bash
-npm install
+npm install --no-package-lock --legacy-peer-deps
 npm run dev
 ```
 
 Open:
 
-```bash
+```text
 http://localhost:3000/achievement-capital
 ```
 
-The root route `/` redirects to `/achievement-capital`.
+## Vercel
 
-## Vercel deployment
+Use Framework Preset: Next.js. Leave Output Directory blank.
 
-1. Upload/push the full project folder to GitHub.
-2. Import the GitHub repo in Vercel.
-3. Framework preset should auto-detect as Next.js.
-4. Deploy.
-5. Open either:
-   - `/`
-   - `/achievement-capital`
+## Latest UI update
 
-## Notes
-
-This is mock-data only. Supabase and AI generation are not connected yet.
-
-## Vercel note
-This clean package intentionally does not include `package-lock.json` because generated lockfiles can contain environment-specific registry URLs. Vercel will install from the public npm registry using `.npmrc`.
-
-If Vercel still fails at `npm install`, set the Vercel project setting **Install Command** to:
-
-```bash
-npm install --no-package-lock
-```
-
-Then redeploy.
+- Smaller typography and less full-screen density.
+- Taller, narrower active achievement card.
+- Dynamic water level from bottom to top based on card progress.
+- Animated wave surface for the water level.
+- Semi-transparent content panel retained for readability.

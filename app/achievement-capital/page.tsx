@@ -50,16 +50,16 @@ export default function AchievementCapitalPage() {
     <main className="min-h-screen overflow-x-hidden bg-[#fbfcff] text-slate-950">
       <Sidebar />
 
-      <section className="ml-[260px] min-h-screen px-12 py-9">
+      <section className="ml-[260px] min-h-screen px-10 py-8">
         <header className="mx-auto flex max-w-[1320px] items-start justify-between">
           <div>
             <div className="flex items-center gap-3">
               <span className="text-3xl text-violet-600">✦</span>
-              <h1 className="text-[34px] font-semibold tracking-tight text-slate-950">
+              <h1 className="text-[30px] font-semibold tracking-tight text-slate-950">
                 Achievement Capital
               </h1>
             </div>
-            <p className="mt-2 text-lg text-slate-600">
+            <p className="mt-2 text-base text-slate-600">
               Turn experience, ideas, and projects into fillable career capital cards.
             </p>
           </div>
@@ -69,7 +69,7 @@ export default function AchievementCapitalPage() {
           </button>
         </header>
 
-        <section className="relative mx-auto mt-12 h-[680px] max-w-[1320px] overflow-visible">
+        <section className="relative mx-auto mt-9 h-[760px] max-w-[1240px] overflow-visible">
           <button
             onClick={goPrevious}
             className="absolute left-2 top-1/2 z-20 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-lg transition hover:scale-105 disabled:opacity-35"
@@ -89,8 +89,8 @@ export default function AchievementCapitalPage() {
                 delta === 0
                   ? "translate(-50%, -50%) scale(1)"
                   : delta < 0
-                    ? "translate(calc(-50% - 470px), -50%) scale(.95)"
-                    : "translate(calc(-50% + 470px), -50%) scale(.95)";
+                    ? "translate(calc(-50% - 420px), -50%) scale(.92)"
+                    : "translate(calc(-50% + 420px), -50%) scale(.92)";
 
               return (
                 <button
@@ -119,7 +119,7 @@ export default function AchievementCapitalPage() {
             ›
           </button>
 
-          <div className="absolute bottom-1 left-1/2 flex -translate-x-1/2 justify-center gap-3">
+          <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 justify-center gap-3">
             {cards.map((card, index) => (
               <button
                 key={card.id}
