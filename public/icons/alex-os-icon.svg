@@ -1,0 +1,28 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="112" fill="#F8FBFF"/>
+  <rect x="44" y="44" width="424" height="424" rx="92" fill="url(#glass)" stroke="white" stroke-width="10"/>
+  <path d="M118 360L210 134C217 118 239 118 246 134L338 360H289L269 306H187L167 360H118ZM201 268H255L228 196L201 268Z" fill="#0F172A"/>
+  <path d="M326 176C326 155 343 138 364 138H382C403 138 420 155 420 176V194C420 215 403 232 382 232H364C343 232 326 215 326 194V176Z" fill="url(#accent)"/>
+  <path d="M324 286C324 265 341 248 362 248H384C405 248 422 265 422 286V308C422 329 405 346 384 346H362C341 346 324 329 324 308V286Z" fill="url(#accent2)"/>
+  <path d="M88 370C144 342 199 338 252 358C314 381 370 372 424 334V398C365 430 304 434 241 410C187 390 136 398 88 432V370Z" fill="url(#water)" opacity="0.74"/>
+  <defs>
+    <linearGradient id="glass" x1="76" y1="58" x2="430" y2="450" gradientUnits="userSpaceOnUse">
+      <stop stop-color="white" stop-opacity="0.96"/>
+      <stop offset="0.48" stop-color="#EEF6FF" stop-opacity="0.82"/>
+      <stop offset="1" stop-color="#E0F2FE" stop-opacity="0.72"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="326" y1="138" x2="420" y2="232" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBCFE8"/>
+      <stop offset="1" stop-color="#FB7185"/>
+    </linearGradient>
+    <linearGradient id="accent2" x1="324" y1="248" x2="422" y2="346" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#BFDBFE"/>
+      <stop offset="1" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="water" x1="88" y1="334" x2="424" y2="432" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#38BDF8"/>
+      <stop offset="0.52" stop-color="#60A5FA"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+</svg>
