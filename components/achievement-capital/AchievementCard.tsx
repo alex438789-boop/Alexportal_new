@@ -55,7 +55,7 @@ export function AchievementCard({ card, active = false, side, onEdit, onAiAction
         isComplete ? "liquid-glass-card-complete" : ""
       } ${
         active
-          ? "h-[720px] w-[470px] opacity-100"
+          ? "h-[660px] w-[min(470px,calc(100vw-32px))] opacity-100 sm:h-[700px] md:h-[720px] md:w-[470px]"
           : "h-[575px] w-[315px] opacity-65 blur-[0.9px]"
       }`}
       style={completeStyle}
@@ -78,9 +78,9 @@ export function AchievementCard({ card, active = false, side, onEdit, onAiAction
         />
       </div>
 
-      <div className={`relative z-10 flex h-full flex-col ${active ? "p-7" : "p-6"}`}>
+      <div className={`relative z-10 flex h-full flex-col ${active ? "p-5 sm:p-7" : "p-6"}`}>
         <div className="flex items-start justify-between gap-3">
-          <span className={`liquid-glass-chip rounded-xl px-3.5 py-1.5 text-xs font-semibold ${tone.tag}`}>
+          <span className={`liquid-glass-chip max-w-[185px] truncate rounded-xl px-3.5 py-1.5 text-xs font-semibold sm:max-w-[260px] ${tone.tag}`}>
             {card.category}
           </span>
 

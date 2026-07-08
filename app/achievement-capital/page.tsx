@@ -429,15 +429,15 @@ export default function AchievementCapitalPage() {
   };
 
   return (
-    <main className="flex min-h-screen overflow-hidden bg-[#f8fbff] text-slate-950">
+    <main className="flex min-h-screen flex-col overflow-x-hidden overflow-y-auto bg-[#f8fbff] text-slate-950 md:flex-row md:overflow-hidden">
       <Sidebar />
 
-      <section className="relative flex-1 overflow-hidden px-8 py-8">
-        <header className="mx-auto flex max-w-[1320px] items-start justify-between gap-6">
+      <section className="relative flex-1 overflow-x-hidden px-4 py-5 sm:px-6 md:overflow-hidden md:px-8 md:py-8">
+        <header className="mx-auto flex max-w-[1320px] flex-col items-stretch justify-between gap-4 sm:flex-row sm:items-start md:gap-6">
           <div>
             <div className="flex items-center gap-3">
-              <span className="text-3xl text-violet-600">✦</span>
-              <h1 className="text-3xl font-semibold tracking-tight text-slate-950">
+              <span className="text-2xl text-violet-600 sm:text-3xl">✦</span>
+              <h1 className="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
                 Achievement Capital
               </h1>
             </div>
@@ -451,13 +451,13 @@ export default function AchievementCapitalPage() {
               setAgentMessage(null);
               setNewInputOpen(true);
             }}
-            className="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(124,58,237,0.25)] hover:bg-violet-500"
+            className="rounded-2xl bg-violet-600 px-5 py-3 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(124,58,237,0.25)] hover:bg-violet-500 sm:self-start"
           >
             ✦ New Input
           </button>
         </header>
 
-        <section className="relative mx-auto mt-8 h-[760px] max-w-[1320px] overflow-visible">
+        <section className="relative mx-auto mt-6 h-[690px] max-w-[1320px] overflow-visible sm:h-[730px] md:mt-8 md:h-[760px]">
           {positionedCards.map(({ card, index, diff }) => {
             if (Math.abs(diff) > 1) return null;
             const isActive = diff === 0;
@@ -470,7 +470,7 @@ export default function AchievementCapitalPage() {
             return (
               <div
                 key={card.id}
-                className="absolute left-1/2 top-1/2 transition-all duration-500"
+                className={`absolute left-1/2 top-1/2 transition-all duration-500 ${!isActive ? "hidden md:block" : ""}`}
                 style={{
                   transform: translate,
                   zIndex: isActive ? 20 : 10,
@@ -493,7 +493,7 @@ export default function AchievementCapitalPage() {
 
           <button
             onClick={() => setActiveCardId(cards[Math.max(0, activeIndex - 1)]?.id ?? activeCard?.id ?? null)}
-            className="absolute left-4 top-1/2 z-30 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-xl hover:bg-slate-50"
+            className="absolute left-0 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-2xl text-slate-900 shadow-xl hover:bg-slate-50 sm:left-4 sm:h-14 sm:w-14 sm:text-3xl"
             aria-label="Previous card"
           >
             ‹
@@ -502,7 +502,7 @@ export default function AchievementCapitalPage() {
             onClick={() =>
               setActiveCardId(cards[Math.min(cards.length - 1, activeIndex + 1)]?.id ?? activeCard?.id ?? null)
             }
-            className="absolute right-4 top-1/2 z-30 flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full bg-white text-3xl text-slate-900 shadow-xl hover:bg-slate-50"
+            className="absolute right-0 top-1/2 z-30 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white text-2xl text-slate-900 shadow-xl hover:bg-slate-50 sm:right-4 sm:h-14 sm:w-14 sm:text-3xl"
             aria-label="Next card"
           >
             ›

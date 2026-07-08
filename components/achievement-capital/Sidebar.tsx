@@ -7,7 +7,7 @@ const navItems = [
 
 export function Sidebar() {
   return (
-    <aside className="h-screen w-[270px] shrink-0 border-r border-slate-200 bg-white px-5 py-7">
+    <aside className="hidden h-screen w-[270px] shrink-0 border-r border-slate-200 bg-white px-5 py-7 md:block">
       <div className="mb-12">
         <div className="mb-8 h-8 w-12 rounded-full bg-cyan-400" />
         <h1 className="text-2xl font-bold tracking-tight text-slate-950">
