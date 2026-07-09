@@ -1,5 +1,11 @@
 export type AchievementStatus = "Idea" | "In Progress" | "Developing" | "Validated" | "Exported";
 
+export type CareerCapitalStage = "seed" | "material" | "structure" | "output" | "proof";
+
+export type GateReviewStatus = "none" | "pending" | "passed" | "adjusted" | "dismissed";
+
+export type CardColorTheme = "auto" | "amber" | "violet" | "blue" | "teal" | "rose";
+
 export type AchievementEventType =
   | "card_created"
   | "manual_edit"
@@ -22,14 +28,32 @@ export type AchievementEvidenceType =
   | "project"
   | "verification";
 
+export type AchievementGoalMilestoneStatus = "not_started" | "active" | "done" | "blocked";
+
+export type AchievementGoalMilestoneType = "30_day" | "90_day" | "review" | "custom";
+
+export type AchievementActivityType = "input" | "processing" | "structuring" | "output" | "proof";
+
+export type AchievementProductivityType = "output" | "learning" | "strategic" | "recovery" | "identity";
+
+export type AchievementEnergyLevel = "low" | "medium" | "high";
+
+export type AchievementMilestoneType = "output" | "skill" | "evidence" | "career" | "identity" | "proof";
+
 export type AchievementCardData = {
   id: string;
   title: string;
   subtitle: string;
   category: string;
   tags: string[];
+  colorTheme: CardColorTheme;
   status: AchievementStatus;
   progress: number;
+  stage: CareerCapitalStage;
+  timeInvestedMinutes: number;
+  lastFilledAt?: string;
+  nextGate: number;
+  gateStatus: GateReviewStatus;
   currentValue: string;
   skills: string[];
   nextFillAction: string;
@@ -41,6 +65,8 @@ export type AchievementCardData = {
   createdAt: string;
   updatedAt: string;
   timeline: AchievementEvent[];
+  activities: AchievementActivity[];
+  milestones: AchievementMilestone[];
   evidence: AchievementEvidence[];
   missingEvidence: AchievementMissingEvidence[];
   goal?: AchievementGoal;
@@ -101,8 +127,56 @@ export type AchievementGoalMilestone = {
   id: string;
   title: string;
   deadline: string;
+  type: AchievementGoalMilestoneType;
+  status: AchievementGoalMilestoneStatus;
   completionCriteria: string[];
   progressContribution: number;
+  nextAction: string;
+  reviewNote: string;
+  completedAt?: string;
   createdAt: string;
   updatedAt: string;
+};
+
+export type AchievementActivity = {
+  id: string;
+  cardId: string;
+  title: string;
+  note: string;
+  date: string;
+  durationMinutes: number;
+  activityType: AchievementActivityType;
+  productivityType?: AchievementProductivityType;
+  energyLevel?: AchievementEnergyLevel;
+  waterImpact: number;
+  aiClassification?: string;
+  isMilestoneCandidate: boolean;
+  promotedToMilestone: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AchievementMilestone = {
+  id: string;
+  cardId: string;
+  title: string;
+  description: string;
+  date: string;
+  milestoneType: AchievementMilestoneType;
+  evidenceUrl?: string;
+  resumeBullet?: string;
+  significance?: string;
+  createdFromActivityId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type Spark = {
+  id: string;
+  title: string;
+  inspiration: string;
+  collision: string;
+  sourceContextSummary: string;
+  saved: boolean;
+  createdAt: string;
 };

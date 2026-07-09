@@ -6,8 +6,11 @@ import {
   AchievementEvidence,
   AchievementGoal,
   AchievementGoalMilestone,
+  AchievementGoalMilestoneStatus,
+  AchievementGoalMilestoneType,
   AchievementMissingEvidence,
   AchievementStatus,
+  CardColorTheme,
 } from "./types";
 import {
   normalizeCard,
@@ -91,9 +94,24 @@ export function AchievementEditModal({ card, open, mode, canDelete, onClose, onS
             <input className="input" value={draft.subtitle} onChange={(e) => updateField("subtitle", e.target.value)} />
           </Field>
 
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-4">
             <Field label="Category">
               <input className="input" value={draft.category} onChange={(e) => updateField("category", e.target.value)} />
+            </Field>
+
+            <Field label="Color Theme">
+              <select
+                className="input"
+                value={draft.colorTheme}
+                onChange={(e) => updateField("colorTheme", e.target.value as CardColorTheme)}
+              >
+                <option value="auto">Auto / 自動判斷</option>
+                <option value="amber">Amber / 產品黃</option>
+                <option value="violet">Violet / 金融紫</option>
+                <option value="blue">Blue / 研究藍</option>
+                <option value="teal">Teal / 永續青綠</option>
+                <option value="rose">Rose / 副業玫瑰</option>
+              </select>
             </Field>
 
             <Field label="Status">
@@ -316,15 +334,121 @@ export function AchievementEditModal({ card, open, mode, canDelete, onClose, onS
                     onChange={(e) => updateGoalField(draft, setDraft, "identitySignal", e.target.value)}
                   />
                 </Field>
-                <Field label="Goal Milestones">
-                  <textarea
-                    className="textarea min-h-[180px]"
-                    value={serializeMilestones(draft.goal.milestones)}
-                    onChange={(e) =>
-                      updateGoalField(draft, setDraft, "milestones", parseMilestones(e.target.value))
-                    }
-                  />
-                </Field>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Goal Milestones</p>
+                      <p className="mt-1 text-sm text-slate-500">Set custom dates, status, and water contribution.</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => addMilestone(draft, setDraft)}
+                      className="rounded-2xl border border-slate-200 bg-white px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                    >
+                      Add Milestone
+                    </button>
+                  </div>
+
+                  {draft.goal.milestones.map((milestone, index) => (
+                    <div key={milestone.id} className="rounded-2xl border border-slate-200 bg-white p-4">
+                      <div className="mb-3 flex items-start justify-between gap-3">
+                        <p className="text-sm font-semibold text-slate-900">Milestone {index + 1}</p>
+                        <button
+                          type="button"
+                          onClick={() => deleteMilestone(draft, setDraft, milestone.id)}
+                          className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500 hover:bg-red-50 hover:text-red-600"
+                        >
+                          Delete
+                        </button>
+                      </div>
+
+                      <div className="grid gap-3">
+                        <input
+                          className="input"
+                          value={milestone.title}
+                          placeholder="Milestone title"
+                          onChange={(event) => updateMilestone(draft, setDraft, milestone.id, { title: event.target.value })}
+                        />
+
+                        <div className="grid gap-3 md:grid-cols-4">
+                          <input
+                            className="input"
+                            type="date"
+                            value={milestone.deadline}
+                            onChange={(event) => updateMilestone(draft, setDraft, milestone.id, { deadline: event.target.value })}
+                          />
+                          <select
+                            className="input"
+                            value={milestone.type}
+                            onChange={(event) =>
+                              updateMilestone(draft, setDraft, milestone.id, {
+                                type: event.target.value as AchievementGoalMilestoneType,
+                              })
+                            }
+                          >
+                            <option value="custom">Custom</option>
+                            <option value="30_day">30 day</option>
+                            <option value="90_day">90 day</option>
+                            <option value="review">Review</option>
+                          </select>
+                          <select
+                            className="input"
+                            value={milestone.status}
+                            onChange={(event) =>
+                              updateMilestone(draft, setDraft, milestone.id, {
+                                status: event.target.value as AchievementGoalMilestoneStatus,
+                                completedAt: event.target.value === "done" ? new Date().toISOString() : undefined,
+                              })
+                            }
+                          >
+                            <option value="not_started">Not started</option>
+                            <option value="active">Active</option>
+                            <option value="done">Done</option>
+                            <option value="blocked">Blocked</option>
+                          </select>
+                          <input
+                            className="input"
+                            type="number"
+                            min={0}
+                            max={100}
+                            value={milestone.progressContribution}
+                            onChange={(event) =>
+                              updateMilestone(draft, setDraft, milestone.id, {
+                                progressContribution: Number(event.target.value),
+                              })
+                            }
+                          />
+                        </div>
+
+                        <textarea
+                          className="textarea"
+                          value={milestone.nextAction}
+                          placeholder="Next action"
+                          onChange={(event) => updateMilestone(draft, setDraft, milestone.id, { nextAction: event.target.value })}
+                        />
+                        <textarea
+                          className="textarea"
+                          value={milestone.completionCriteria.join("\n")}
+                          placeholder="Completion criteria, one per line"
+                          onChange={(event) =>
+                            updateMilestone(draft, setDraft, milestone.id, {
+                              completionCriteria: event.target.value
+                                .split("\n")
+                                .map((value) => value.trim())
+                                .filter(Boolean),
+                            })
+                          }
+                        />
+                        <textarea
+                          className="textarea"
+                          value={milestone.reviewNote}
+                          placeholder="Review note"
+                          onChange={(event) => updateMilestone(draft, setDraft, milestone.id, { reviewNote: event.target.value })}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -421,30 +545,61 @@ function updateGoalField<K extends keyof AchievementGoal>(
   });
 }
 
-function parseMilestones(value: string): AchievementGoalMilestone[] {
-  return value
-    .split("\n---\n")
-    .map((block) => block.trim())
-    .filter(Boolean)
-    .map((block) => {
-      const [header = "", ...criteria] = block.split("\n").map((line) => line.trim()).filter(Boolean);
-      const [title = "", deadline = "", contribution = "0"] = header.split("::").map((item) => item.trim());
-      return normalizeGoalMilestone({
-        title,
-        deadline,
-        progressContribution: Number(contribution.replace("+", "").replace("%", "")),
-        completionCriteria: criteria.map((line) => line.replace(/^- /, "")),
-      });
-    });
+function addMilestone(
+  draft: AchievementCardData,
+  setDraft: React.Dispatch<React.SetStateAction<AchievementCardData | null>>
+) {
+  if (!draft.goal) return;
+
+  updateGoalField(draft, setDraft, "milestones", [
+    ...draft.goal.milestones,
+    normalizeGoalMilestone({
+      title: "New milestone",
+      deadline: new Date().toISOString().slice(0, 10),
+      type: "custom",
+      status: "not_started",
+      progressContribution: 5,
+      nextAction: "",
+      completionCriteria: [],
+      reviewNote: "",
+    }),
+  ]);
 }
 
-function serializeMilestones(items: AchievementGoalMilestone[]) {
-  return items
-    .map(
-      (item) =>
-        `${item.title} :: ${item.deadline} :: +${item.progressContribution}%\n${item.completionCriteria
-          .map((criterion) => `- ${criterion}`)
-          .join("\n")}`
+function updateMilestone(
+  draft: AchievementCardData,
+  setDraft: React.Dispatch<React.SetStateAction<AchievementCardData | null>>,
+  milestoneId: string,
+  patch: Partial<AchievementGoalMilestone>
+) {
+  if (!draft.goal) return;
+
+  updateGoalField(
+    draft,
+    setDraft,
+    "milestones",
+    draft.goal.milestones.map((milestone) =>
+      milestone.id === milestoneId
+        ? normalizeGoalMilestone({
+            ...milestone,
+            ...patch,
+            updatedAt: new Date().toISOString(),
+          })
+        : milestone
     )
-    .join("\n---\n");
+  );
+}
+
+function deleteMilestone(
+  draft: AchievementCardData,
+  setDraft: React.Dispatch<React.SetStateAction<AchievementCardData | null>>,
+  milestoneId: string
+) {
+  if (!draft.goal) return;
+  updateGoalField(
+    draft,
+    setDraft,
+    "milestones",
+    draft.goal.milestones.filter((milestone) => milestone.id !== milestoneId)
+  );
 }

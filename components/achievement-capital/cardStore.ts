@@ -1,11 +1,20 @@
 import {
+  AchievementActivity,
+  AchievementActivityType,
   AchievementCardData,
+  CardColorTheme,
   AchievementEvidence,
   AchievementEvent,
   AchievementEventType,
   AchievementGoal,
   AchievementGoalMilestone,
+  AchievementGoalMilestoneStatus,
+  AchievementGoalMilestoneType,
+  AchievementMilestone,
+  AchievementMilestoneType,
   AchievementMissingEvidence,
+  CareerCapitalStage,
+  GateReviewStatus,
 } from "./types";
 import { mockAchievementCards } from "./mockData";
 
@@ -38,6 +47,62 @@ const TIMELINE_EVENT_TYPES = new Set<AchievementEventType>([
   "evidence_updated",
   "missing_evidence_updated",
 ]);
+
+const GOAL_MILESTONE_STATUSES = new Set<AchievementGoalMilestoneStatus>([
+  "not_started",
+  "active",
+  "done",
+  "blocked",
+]);
+
+const GOAL_MILESTONE_TYPES = new Set<AchievementGoalMilestoneType>([
+  "30_day",
+  "90_day",
+  "review",
+  "custom",
+]);
+
+const ACTIVITY_TYPES = new Set<AchievementActivityType>([
+  "input",
+  "processing",
+  "structuring",
+  "output",
+  "proof",
+]);
+
+const MILESTONE_TYPES = new Set<AchievementMilestoneType>([
+  "output",
+  "skill",
+  "evidence",
+  "career",
+  "identity",
+  "proof",
+]);
+
+const GATE_REVIEW_STATUSES = new Set<GateReviewStatus>([
+  "none",
+  "pending",
+  "passed",
+  "adjusted",
+  "dismissed",
+]);
+
+const CARD_COLOR_THEMES = new Set<CardColorTheme>([
+  "auto",
+  "amber",
+  "violet",
+  "blue",
+  "teal",
+  "rose",
+]);
+
+export const DEFAULT_ACTIVITY_WATER_IMPACT: Record<AchievementActivityType, number> = {
+  input: 2,
+  processing: 5,
+  structuring: 8,
+  output: 12,
+  proof: 20,
+};
 
 function createId(prefix: string) {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
@@ -99,11 +164,32 @@ export function normalizeGoalMilestone(item: Partial<AchievementGoalMilestone>):
     id: item.id ?? createId("goal-milestone"),
     title: item.title?.trim() || "Untitled milestone",
     deadline: item.deadline?.trim() || "",
+    type: coerceMilestoneType(item.type),
+    status: coerceMilestoneStatus(item.status),
     completionCriteria: item.completionCriteria?.map((value) => value.trim()).filter(Boolean) ?? [],
     progressContribution: Math.max(0, Math.min(100, item.progressContribution ?? 0)),
+    nextAction: item.nextAction?.trim() || "",
+    reviewNote: item.reviewNote?.trim() || "",
+    completedAt: item.completedAt,
     createdAt: item.createdAt ?? now,
     updatedAt: item.updatedAt ?? item.createdAt ?? now,
   };
+}
+
+function coerceMilestoneStatus(status: unknown): AchievementGoalMilestoneStatus {
+  if (typeof status === "string" && GOAL_MILESTONE_STATUSES.has(status as AchievementGoalMilestoneStatus)) {
+    return status as AchievementGoalMilestoneStatus;
+  }
+
+  return "not_started";
+}
+
+function coerceMilestoneType(type: unknown): AchievementGoalMilestoneType {
+  if (typeof type === "string" && GOAL_MILESTONE_TYPES.has(type as AchievementGoalMilestoneType)) {
+    return type as AchievementGoalMilestoneType;
+  }
+
+  return "custom";
 }
 
 export function normalizeGoal(item: Partial<AchievementGoal>): AchievementGoal {
@@ -131,8 +217,53 @@ export function normalizeGoal(item: Partial<AchievementGoal>): AchievementGoal {
   };
 }
 
+export function normalizeActivity(item: Partial<AchievementActivity>, cardId = ""): AchievementActivity {
+  const now = new Date().toISOString();
+  const activityType = coerceActivityType(item.activityType);
+
+  return {
+    id: item.id ?? createId("activity"),
+    cardId: item.cardId ?? cardId,
+    title: item.title?.trim() || "Untitled activity",
+    note: item.note?.trim() || "",
+    date: item.date?.trim() || now.slice(0, 10),
+    durationMinutes: Math.max(0, item.durationMinutes ?? 0),
+    activityType,
+    productivityType: item.productivityType,
+    energyLevel: item.energyLevel,
+    waterImpact: Math.max(0, Math.min(100, item.waterImpact ?? DEFAULT_ACTIVITY_WATER_IMPACT[activityType])),
+    aiClassification: item.aiClassification?.trim() || "",
+    isMilestoneCandidate: item.isMilestoneCandidate ?? (activityType === "output" || activityType === "proof"),
+    promotedToMilestone: item.promotedToMilestone ?? false,
+    createdAt: item.createdAt ?? now,
+    updatedAt: item.updatedAt ?? item.createdAt ?? now,
+  };
+}
+
+export function normalizeMilestone(item: Partial<AchievementMilestone>, cardId = ""): AchievementMilestone {
+  const now = new Date().toISOString();
+
+  return {
+    id: item.id ?? createId("milestone"),
+    cardId: item.cardId ?? cardId,
+    title: item.title?.trim() || "Untitled milestone",
+    description: item.description?.trim() || "",
+    date: item.date?.trim() || now.slice(0, 10),
+    milestoneType: coerceMilestoneStoryType(item.milestoneType),
+    evidenceUrl: item.evidenceUrl?.trim() || "",
+    resumeBullet: item.resumeBullet?.trim() || "",
+    significance: item.significance?.trim() || "",
+    createdFromActivityId: item.createdFromActivityId,
+    createdAt: item.createdAt ?? now,
+    updatedAt: item.updatedAt ?? item.createdAt ?? now,
+  };
+}
+
 export function normalizeCard(card: Partial<AchievementCardData>): AchievementCardData {
   const now = new Date().toISOString();
+  const progress = Math.max(0, Math.min(100, card.progress ?? 0));
+  const activities = (card.activities ?? []).map((activity) => normalizeActivity(activity, card.id));
+  const evidence = (card.evidence ?? []).map(normalizeEvidence);
 
   return {
     id: card.id ?? createId("card"),
@@ -140,8 +271,14 @@ export function normalizeCard(card: Partial<AchievementCardData>): AchievementCa
     subtitle: card.subtitle?.trim() || "",
     category: card.category?.trim() || "Research",
     tags: card.tags?.filter(Boolean) ?? [],
+    colorTheme: coerceCardColorTheme(card.colorTheme),
     status: card.status ?? "Idea",
-    progress: Math.max(0, Math.min(100, card.progress ?? 0)),
+    progress,
+    stage: card.stage ?? inferStage(progress),
+    timeInvestedMinutes: card.timeInvestedMinutes ?? activities.reduce((total, activity) => total + activity.durationMinutes, 0),
+    lastFilledAt: card.lastFilledAt ?? activities.sort((a, b) => b.date.localeCompare(a.date))[0]?.date,
+    nextGate: card.nextGate ?? inferNextGate(progress),
+    gateStatus: coerceGateReviewStatus(card.gateStatus),
     currentValue: card.currentValue?.trim() || "",
     skills: card.skills?.filter(Boolean) ?? [],
     nextFillAction: card.nextFillAction?.trim() || "Add the next smallest proof point.",
@@ -167,10 +304,44 @@ export function normalizeCard(card: Partial<AchievementCardData>): AchievementCa
         newProgress: event.newProgress,
       };
     }),
-    evidence: (card.evidence ?? []).map(normalizeEvidence),
+    activities,
+    milestones: (card.milestones ?? []).map((milestone) => normalizeMilestone(milestone, card.id)),
+    evidence,
     missingEvidence: (card.missingEvidence ?? inferMissingEvidence(card)).map(normalizeMissingEvidence),
     goal: card.goal ? normalizeGoal(card.goal) : undefined,
   };
+}
+
+function coerceCardColorTheme(theme: unknown): CardColorTheme {
+  if (typeof theme === "string" && CARD_COLOR_THEMES.has(theme as CardColorTheme)) {
+    return theme as CardColorTheme;
+  }
+
+  return "auto";
+}
+
+function coerceActivityType(type: unknown): AchievementActivityType {
+  if (typeof type === "string" && ACTIVITY_TYPES.has(type as AchievementActivityType)) {
+    return type as AchievementActivityType;
+  }
+
+  return "input";
+}
+
+function coerceMilestoneStoryType(type: unknown): AchievementMilestoneType {
+  if (typeof type === "string" && MILESTONE_TYPES.has(type as AchievementMilestoneType)) {
+    return type as AchievementMilestoneType;
+  }
+
+  return "output";
+}
+
+function coerceGateReviewStatus(status: unknown): GateReviewStatus {
+  if (typeof status === "string" && GATE_REVIEW_STATUSES.has(status as GateReviewStatus)) {
+    return status as GateReviewStatus;
+  }
+
+  return "none";
 }
 
 function coerceTimelineType(type: unknown): AchievementEventType {
@@ -244,8 +415,13 @@ export function createEmptyCardDraft(): AchievementCardData {
     subtitle: "",
     category: "Research",
     tags: [],
+    colorTheme: "auto",
     status: "Idea",
     progress: 12,
+    stage: "seed",
+    timeInvestedMinutes: 0,
+    nextGate: 40,
+    gateStatus: "none",
     currentValue: "",
     skills: [],
     nextFillAction: "Capture one concrete proof point for this card.",
@@ -257,8 +433,54 @@ export function createEmptyCardDraft(): AchievementCardData {
     createdAt: now,
     updatedAt: now,
     evidence: [],
+    activities: [],
+    milestones: [],
     missingEvidence: [],
     timeline: [],
+  });
+}
+
+export function inferStage(waterLevel: number): CareerCapitalStage {
+  if (waterLevel >= 80) return "proof";
+  if (waterLevel >= 60) return "output";
+  if (waterLevel >= 40) return "structure";
+  if (waterLevel >= 20) return "material";
+  return "seed";
+}
+
+export function inferNextGate(waterLevel: number) {
+  if (waterLevel < 40) return 40;
+  if (waterLevel < 60) return 60;
+  if (waterLevel < 80) return 80;
+  return 100;
+}
+
+export function inferWaterCap(card: Partial<AchievementCardData>) {
+  const activities = card.activities ?? [];
+  const hasProof = activities.some((activity) => activity.activityType === "proof") || Boolean(card.evidence?.length);
+  const hasOutput = activities.some((activity) => activity.activityType === "output");
+  const hasStructuring = activities.some((activity) => activity.activityType === "structuring");
+  const hasProcessing = activities.some((activity) => activity.activityType === "processing");
+
+  if (hasProof) return 100;
+  if (hasOutput) return 85;
+  if (hasStructuring) return 65;
+  if (hasProcessing) return 45;
+  if (activities.length > 0) return 30;
+  return 100;
+}
+
+export function applyWaterRules(card: AchievementCardData, intendedProgress: number) {
+  const cap = inferWaterCap(card);
+  const cappedProgress = Math.min(100, Math.min(cap, intendedProgress));
+
+  return normalizeCard({
+    ...card,
+    progress: cappedProgress,
+    stage: inferStage(cappedProgress),
+    nextGate: inferNextGate(cappedProgress),
+    gateStatus:
+      [40, 60, 80].some((gate) => card.progress < gate && cappedProgress >= gate) ? "pending" : card.gateStatus,
   });
 }
 

@@ -1,6 +1,6 @@
 import { AchievementCardData } from "./types";
 
-export const mockAchievementCards: AchievementCardData[] = [
+export const mockAchievementCards: Partial<AchievementCardData>[] = [
   {
     id: "kinmen-dissertation",
     title: "Threat Perception and Ontological Security in Kinmen",
@@ -256,7 +256,11 @@ export const mockAchievementCards: AchievementCardData[] = [
           id: "goal-soft-furnishing-30d",
           title: "30 天目標：完成第一個租屋小宅改裝軟裝提案",
           deadline: "2026-08-08",
+          type: "30_day",
+          status: "active",
           progressContribution: 20,
+          nextAction: "開啟 SketchUp，建立 3m × 4m × 2.8m 的租屋小宅房間盒子。",
+          reviewNote: "",
           completionCriteria: [
             "完成一個 3m × 4m × 2.8m 的 SketchUp 租屋小宅房間模型",
             "放入床、書桌、椅子、衣架或衣櫃、層架、燈、地毯、窗簾、活動式收納",
@@ -273,7 +277,11 @@ export const mockAchievementCards: AchievementCardData[] = [
           id: "goal-soft-furnishing-90d",
           title: "90 天目標：完成 3 個市場導向虛擬空間案例",
           deadline: "2026-10-08",
+          type: "90_day",
+          status: "not_started",
           progressContribution: 35,
+          nextAction: "先完成第一個 30 天租屋小宅案例，再複製成三種客群版本。",
+          reviewNote: "",
           completionCriteria: [
             "完成台北 5 坪租屋改造",
             "完成研究生／年輕上班族小房間升級",
@@ -289,7 +297,11 @@ export const mockAchievementCards: AchievementCardData[] = [
           id: "goal-soft-furnishing-6m",
           title: "6 個月目標：完成 1-2 個真實租屋或小宅軟裝改造案例",
           deadline: "2027-01-08",
+          type: "custom",
+          status: "not_started",
           progressContribution: 25,
+          nextAction: "列出可邀請的朋友、同學、家人或自己的租屋空間作為候選案例。",
+          reviewNote: "",
           completionCriteria: [
             "找朋友、家人、同學、同事或自己的租屋空間作為案例",
             "完成現場丈量",
@@ -307,7 +319,11 @@ export const mockAchievementCards: AchievementCardData[] = [
           id: "goal-soft-furnishing-12m",
           title: "12 個月目標：上架第一個產品化服務",
           deadline: "2027-07-08",
+          type: "custom",
+          status: "not_started",
           progressContribution: 20,
+          nextAction: "先把前三個作品集案例整理成服務頁素材。",
+          reviewNote: "",
           completionCriteria: [
             "推出至少一個可販售服務：NT$3,000 租屋軟裝診斷、NT$6,800 租屋小房間升級方案、NT$9,800 小宅軟裝完整提案、NT$12,000+ AI 視覺化＋SketchUp 配置＋採購清單、或 NT$20,000+ 租屋小宅全案軟裝陪跑",
             "完成至少 1 筆付費案或 3 筆低價測試案",

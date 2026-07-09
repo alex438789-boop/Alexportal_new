@@ -19,7 +19,7 @@ export function AchievementCard({ card, active = false, side, onEdit, onAiAction
   const isComplete = progress >= 100;
   const waterHeight = `${progress}%`;
   const waterMaxHeight = isComplete ? "100%" : active ? "calc(100% - 170px)" : "calc(100% - 150px)";
-  const tone = getCardTone(card.category, card.tags);
+  const tone = getCardTone(card.category, card.tags, card.colorTheme);
   const completeStyle = {
     "--complete-edge": tone.completeEdge,
     "--complete-glow": tone.completeGlow,
@@ -154,6 +154,12 @@ export function AchievementCard({ card, active = false, side, onEdit, onAiAction
           <p className={`${active ? "mt-2 text-[15px]" : "mt-2 text-sm"} text-slate-600`}>
             {card.subtitle}
           </p>
+          <div className="mt-5 grid grid-cols-2 gap-2.5 text-[11px] text-slate-500 sm:mt-6 sm:grid-cols-4 sm:gap-2">
+            <CardMetric label="Stage" value={card.stage} />
+            <CardMetric label="Time" value={formatMinutes(card.timeInvestedMinutes)} />
+            <CardMetric label="Last filled" value={card.lastFilledAt || "Not yet"}/>
+            <CardMetric label="Next gate" value={`${card.nextGate}%`} />
+          </div>
         </div>
 
         <div className={`liquid-glass-panel relative mt-auto overflow-hidden rounded-[1.45rem] ${panelPadding}`}>
@@ -404,37 +410,110 @@ function WaterSimulationCanvas({
   return <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />;
 }
 
-function getCardTone(category: string, tags: string[]) {
+type CardTone = {
+  tag: string;
+  number: string;
+  section: string;
+  water: string;
+  waveFill: string;
+  waveFillSoft: string;
+  completeEdge: string;
+  completeGlow: string;
+  completeSheen: string;
+  skill: string;
+};
+
+const CARD_TONES: Record<Exclude<AchievementCardData["colorTheme"], "auto">, CardTone> = {
+  amber: {
+    tag: "bg-amber-100/90 text-amber-700",
+    number: "text-amber-600",
+    section: "text-amber-700",
+    water: "bg-gradient-to-t from-amber-200/70 via-yellow-100/58 to-amber-50/22",
+    waveFill: "rgba(245, 158, 11, 0.32)",
+    waveFillSoft: "rgba(253, 224, 71, 0.26)",
+    completeEdge: "rgba(245, 158, 11, 0.54)",
+    completeGlow: "rgba(251, 191, 36, 0.2)",
+    completeSheen: "rgba(255, 251, 235, 0.72)",
+    skill: "border-amber-200 bg-amber-50/85 text-amber-700",
+  },
+  violet: {
+    tag: "bg-violet-100/90 text-violet-700",
+    number: "text-violet-600",
+    section: "text-violet-700",
+    water: "bg-gradient-to-t from-violet-200/70 via-purple-100/58 to-violet-50/22",
+    waveFill: "rgba(139, 92, 246, 0.32)",
+    waveFillSoft: "rgba(196, 181, 253, 0.26)",
+    completeEdge: "rgba(139, 92, 246, 0.52)",
+    completeGlow: "rgba(167, 139, 250, 0.2)",
+    completeSheen: "rgba(245, 243, 255, 0.72)",
+    skill: "border-violet-200 bg-violet-50/85 text-violet-700",
+  },
+  blue: {
+    tag: "bg-blue-100/90 text-blue-700",
+    number: "text-blue-600",
+    section: "text-blue-700",
+    water: "bg-gradient-to-t from-blue-200/70 via-sky-100/58 to-blue-50/22",
+    waveFill: "rgba(59, 130, 246, 0.30)",
+    waveFillSoft: "rgba(147, 197, 253, 0.26)",
+    completeEdge: "rgba(59, 130, 246, 0.5)",
+    completeGlow: "rgba(96, 165, 250, 0.18)",
+    completeSheen: "rgba(239, 246, 255, 0.72)",
+    skill: "border-blue-200 bg-blue-50/85 text-blue-700",
+  },
+  teal: {
+    tag: "bg-teal-100/90 text-teal-700",
+    number: "text-teal-600",
+    section: "text-teal-700",
+    water: "bg-gradient-to-t from-cyan-200/70 via-teal-100/58 to-cyan-50/22",
+    waveFill: "rgba(20, 184, 166, 0.32)",
+    waveFillSoft: "rgba(125, 211, 252, 0.26)",
+    completeEdge: "rgba(20, 184, 166, 0.5)",
+    completeGlow: "rgba(34, 211, 238, 0.18)",
+    completeSheen: "rgba(240, 253, 250, 0.72)",
+    skill: "border-teal-200 bg-teal-50/85 text-teal-700",
+  },
+  rose: {
+    tag: "bg-rose-100/90 text-rose-700",
+    number: "text-rose-600",
+    section: "text-rose-700",
+    water: "bg-gradient-to-t from-rose-200/66 via-orange-100/48 to-rose-50/20",
+    waveFill: "rgba(225, 29, 72, 0.27)",
+    waveFillSoft: "rgba(251, 146, 60, 0.22)",
+    completeEdge: "rgba(225, 29, 72, 0.46)",
+    completeGlow: "rgba(251, 113, 133, 0.18)",
+    completeSheen: "rgba(255, 241, 242, 0.74)",
+    skill: "border-rose-200 bg-rose-50/85 text-rose-700",
+  },
+};
+
+const DEFAULT_CARD_TONE: CardTone = {
+  tag: "bg-sky-100/90 text-blue-700",
+  number: "text-blue-600",
+  section: "text-blue-700",
+  water: "bg-gradient-to-t from-blue-200/68 via-sky-100/56 to-blue-50/20",
+  waveFill: "rgba(37, 99, 235, 0.29)",
+  waveFillSoft: "rgba(125, 211, 252, 0.24)",
+  completeEdge: "rgba(37, 99, 235, 0.48)",
+  completeGlow: "rgba(56, 189, 248, 0.18)",
+  completeSheen: "rgba(239, 246, 255, 0.76)",
+  skill: "border-blue-200 bg-sky-50/85 text-blue-700",
+};
+
+function getCardTone(
+  category: string,
+  tags: string[],
+  colorTheme: AchievementCardData["colorTheme"] = "auto"
+) {
+  if (colorTheme !== "auto") return CARD_TONES[colorTheme];
+
   const haystack = `${category} ${tags.join(" ")}`.toLowerCase();
 
   if (haystack.includes("product") || haystack.includes("portal")) {
-    return {
-      tag: "bg-amber-100/90 text-amber-700",
-      number: "text-amber-600",
-      section: "text-amber-700",
-      water: "bg-gradient-to-t from-amber-200/70 via-yellow-100/58 to-amber-50/22",
-      waveFill: "rgba(245, 158, 11, 0.32)",
-      waveFillSoft: "rgba(253, 224, 71, 0.26)",
-      completeEdge: "rgba(245, 158, 11, 0.54)",
-      completeGlow: "rgba(251, 191, 36, 0.2)",
-      completeSheen: "rgba(255, 251, 235, 0.72)",
-      skill: "border-amber-200 bg-amber-50/85 text-amber-700",
-    };
+    return CARD_TONES.amber;
   }
 
   if (haystack.includes("finance")) {
-    return {
-      tag: "bg-violet-100/90 text-violet-700",
-      number: "text-violet-600",
-      section: "text-violet-700",
-      water: "bg-gradient-to-t from-violet-200/70 via-purple-100/58 to-violet-50/22",
-      waveFill: "rgba(139, 92, 246, 0.32)",
-      waveFillSoft: "rgba(196, 181, 253, 0.26)",
-      completeEdge: "rgba(139, 92, 246, 0.52)",
-      completeGlow: "rgba(167, 139, 250, 0.2)",
-      completeSheen: "rgba(245, 243, 255, 0.72)",
-      skill: "border-violet-200 bg-violet-50/85 text-violet-700",
-    };
+    return CARD_TONES.violet;
   }
 
   if (
@@ -444,18 +523,7 @@ function getCardTone(category: string, tags: string[]) {
     haystack.includes("consulting") ||
     haystack.includes("永續")
   ) {
-    return {
-      tag: "bg-teal-100/90 text-teal-700",
-      number: "text-teal-600",
-      section: "text-teal-700",
-      water: "bg-gradient-to-t from-cyan-200/70 via-teal-100/58 to-cyan-50/22",
-      waveFill: "rgba(20, 184, 166, 0.32)",
-      waveFillSoft: "rgba(125, 211, 252, 0.26)",
-      completeEdge: "rgba(20, 184, 166, 0.5)",
-      completeGlow: "rgba(34, 211, 238, 0.18)",
-      completeSheen: "rgba(240, 253, 250, 0.72)",
-      skill: "border-teal-200 bg-teal-50/85 text-teal-700",
-    };
+    return CARD_TONES.teal;
   }
 
   if (
@@ -466,47 +534,14 @@ function getCardTone(category: string, tags: string[]) {
     haystack.includes("aestheticcapital") ||
     haystack.includes("副業")
   ) {
-    return {
-      tag: "bg-rose-100/90 text-rose-700",
-      number: "text-rose-600",
-      section: "text-rose-700",
-      water: "bg-gradient-to-t from-rose-200/66 via-orange-100/48 to-rose-50/20",
-      waveFill: "rgba(225, 29, 72, 0.27)",
-      waveFillSoft: "rgba(251, 146, 60, 0.22)",
-      completeEdge: "rgba(225, 29, 72, 0.46)",
-      completeGlow: "rgba(251, 113, 133, 0.18)",
-      completeSheen: "rgba(255, 241, 242, 0.74)",
-      skill: "border-rose-200 bg-rose-50/85 text-rose-700",
-    };
+    return CARD_TONES.rose;
   }
 
   if (haystack.includes("writing") || haystack.includes("market")) {
-    return {
-      tag: "bg-blue-100/90 text-blue-700",
-      number: "text-blue-600",
-      section: "text-blue-700",
-      water: "bg-gradient-to-t from-blue-200/70 via-sky-100/58 to-blue-50/22",
-      waveFill: "rgba(59, 130, 246, 0.30)",
-      waveFillSoft: "rgba(147, 197, 253, 0.26)",
-      completeEdge: "rgba(59, 130, 246, 0.5)",
-      completeGlow: "rgba(96, 165, 250, 0.18)",
-      completeSheen: "rgba(239, 246, 255, 0.72)",
-      skill: "border-blue-200 bg-blue-50/85 text-blue-700",
-    };
+    return CARD_TONES.blue;
   }
 
-  return {
-    tag: "bg-sky-100/90 text-blue-700",
-    number: "text-blue-600",
-    section: "text-blue-700",
-    water: "bg-gradient-to-t from-blue-200/68 via-sky-100/56 to-blue-50/20",
-    waveFill: "rgba(37, 99, 235, 0.29)",
-    waveFillSoft: "rgba(125, 211, 252, 0.24)",
-    completeEdge: "rgba(37, 99, 235, 0.48)",
-    completeGlow: "rgba(56, 189, 248, 0.18)",
-    completeSheen: "rgba(239, 246, 255, 0.76)",
-    skill: "border-blue-200 bg-sky-50/85 text-blue-700",
-  };
+  return DEFAULT_CARD_TONE;
 }
 
 function getCardDensity(card: AchievementCardData, active: boolean): CardDensity {
@@ -583,6 +618,23 @@ function Clock3Icon() {
 
 function Divider({ dense = false }: { dense?: boolean }) {
   return <div className={`${dense ? "my-2.5" : "my-3.5"} h-px bg-slate-200/85`} />;
+}
+
+function CardMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="min-w-0 rounded-xl bg-white/45 px-2.5 py-2.5 backdrop-blur-sm sm:px-2 sm:py-2">
+      <p className="truncate font-semibold uppercase tracking-[0.12em] text-slate-400">{label}</p>
+      <p className="mt-1 truncate font-medium text-slate-700">{value}</p>
+    </div>
+  );
+}
+
+function formatMinutes(minutes: number) {
+  const hours = Math.floor(minutes / 60);
+  const rest = minutes % 60;
+  if (!hours) return `${rest}m`;
+  if (!rest) return `${hours}h`;
+  return `${hours}h ${rest}m`;
 }
 
 function formatDate(value: string) {
